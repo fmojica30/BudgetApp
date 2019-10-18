@@ -12,7 +12,7 @@ var budgetController = (function () {
     this.value = value;
   };
 
-  var Data = {
+  var data = {
     allItems: {
       exp: [],
       inc: []
@@ -21,10 +21,37 @@ var budgetController = (function () {
       exp: 0,
       inc: 0
     }
-  }
+  };
 
+  return {
+    addItem: function(type, desc, val) {
+      var newItem, ID;
 
+      //ID = lastID + 1
+      //create new ID
+      if (data.allItems[type].length > 0){
+        ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
 
+      //create new Item based on inc or exp type
+      if (type === 'exp') {
+        newItem = new Expense(ID, desc, val);
+      } else if (type === 'inc') {
+        newItem = new Income(ID, desc, val);
+      }
+
+      //Add in the new item
+      data.allItems[type].push(newItem);
+
+      //return the new Element
+      return newItem;
+    },
+    testing: function(){
+      console.log(data);
+    }
+  };
 })();
 
 var UIController = (function() {
@@ -68,17 +95,23 @@ var controller = (function(budgetCtrl, UICtrl){
 
   //functions
   var ctrlAddItem = function() {
+    var input, newItem;
+
     // Get input data
-    var input = UICtrl.getInput();
-    console.log(input);
+    input = UICtrl.getInput();
+
     // Add new item to data structute
+    newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
     // Add new item to UI
 
+
     // calculate budget
 
+
     // Update UI
-  }
+
+  };
 
   return {
     init: function() {
