@@ -60,7 +60,9 @@ var UIController = (function() {
     inputType: '.add__type',
     inputDescription: '.add__description',
     inputValue: '.add__value',
-    inputBtn: '.add__btn'
+    inputBtn: '.add__btn',
+    outputIncList: '.income__list',
+    outputExpList: '.expenses__list'
   }
 
   return {
@@ -72,6 +74,52 @@ var UIController = (function() {
         value: document.querySelector(DOMStrings.inputValue).value
       }
     },
+
+    // adding an item to the list ui
+    addListItem: function(obj, type){
+      var html, newHTML;
+      //create HTML string with placeholder text
+      if (type === 'inc'){
+        html = `
+        <div class="item clearfix" id="income-%id%">
+            <div class="item__description">%description%</div>
+            <div class="right clearfix">
+                <div class="item__value">+ $%value%</div>
+                <div class="item__delete">
+                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                </div>
+            </div>
+        </div>
+        `
+      } else if (type === 'exp') {
+          html = `
+          <div class="item clearfix" id="expense-%id%">
+              <div class="item__description">%description%</div>
+              <div class="right clearfix">
+                  <div class="item__value">- $%value%</div>
+                  <div class="item__percentage">21%</div>
+                  <div class="item__delete">
+                      <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                  </div>
+              </div>
+          </div>
+          `
+      }
+
+      //replace placeholder text with actual Data
+      newHTML = html.replace('%id%',obj.id);
+      newHTML = newHTML.replace('%description%', obj.description);
+      newHTML = newHTML.replace('%value%', obj.value);
+
+      //insert HTML into the DOM
+      if (type === 'inc'){
+        document.querySelector(DOMStrings.outputIncList).insertAdjacentHTML('beforeend',newHTML);
+      } if (type === 'exp') {
+        document.querySelector(DOMStrings.outputExpList).insertAdjacentHTML('beforeend',newHTML);
+      }
+    },
+
+    //Accessing the DOM strings
     getDOMStrings: function() {
       return DOMStrings;
     }
@@ -104,7 +152,7 @@ var controller = (function(budgetCtrl, UICtrl){
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
     // Add new item to UI
-
+    UICtrl.addListItem(newItem, input.type);
 
     // calculate budget
 
